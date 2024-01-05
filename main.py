@@ -58,10 +58,8 @@ class BossLog(Model):
   class Meta:
     database = db
 
-class KekLog(Model):
-  killid = IntegerField(primary_key=True)
-  duration = IntegerField()
-  time = DateTimeField()
+class MyModel(Model):
+  id = IntegerField(primary_key=True)
 
   class Meta:
     database = db
@@ -73,9 +71,22 @@ faction_code = {"vg": 0, "bl": 1}
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("Connecting to the database...")
-    db.connect()
-    db.create_tables([PlayerLog], safe=True)  # Create tables if they don't exist
-    db.create_tables([BossLog], safe=True)  # Create tables if they don't exist
+
+    try:
+  # Connect to the database and create tables
+      db.connect()
+      db.create_tables([PlayerLog], safe=True)  # Create tables if they don't exist
+      db.create_tables([BossLog], safe=True)  # Create tables if they don't exist
+      db.create_tables([MyModel])
+      
+    except OperationalError as e:
+      # Handle the exception
+      print(f"Error creating tables: {e}")
+        # Additional setup or operations if needed
+
+except OperationalError as e:
+    # Handle the exception
+    print(f"Error creating tables: {e}")
     db.create_tables([KekLog], safe=True)  # Create tables if they don't exist
   
     # Schedule update_db every 2 hours
