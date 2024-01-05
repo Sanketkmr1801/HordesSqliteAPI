@@ -58,6 +58,13 @@ class BossLog(Model):
   class Meta:
     database = db
 
+class KekLog(Model):
+  killid = IntegerField(primary_key=True)
+  duration = IntegerField()
+  time = DateTimeField()
+
+  class Meta:
+    database = db
 
 class_code = {'warrior': 0, 'mage': 1, 'archer': 2, 'shaman': 3}
 faction_code = {"vg": 0, "bl": 1}
@@ -69,7 +76,8 @@ async def lifespan(app: FastAPI):
     db.connect()
     db.create_tables([PlayerLog], safe=True)  # Create tables if they don't exist
     db.create_tables([BossLog], safe=True)  # Create tables if they don't exist
-
+    db.create_tables([KekLog], safe=True)  # Create tables if they don't exist
+  
     # Schedule update_db every 2 hours
     asyncio.create_task(schedule_update_db())
 
