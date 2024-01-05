@@ -1,7 +1,8 @@
-from peewee import Model, SqliteDatabase, IntegerField, CharField, DateTimeField
+from peewee import Model, PostgresqlDatabase, IntegerField, CharField, DateTimeField
 from peewee import fn, JOIN
 from fastapi import FastAPI
 import httpx
+import os
 import json
 import sys
 import asyncio
@@ -10,8 +11,23 @@ import datetime
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 
-db = SqliteDatabase("hordes.db")
+# Fetch environment variables
+postgres_url = os.getenv("POSTGRES_URL")
+postgres_prisma_url = os.getenv("POSTGRES_PRISMA_URL")
+postgres_url_non_pooling = os.getenv("POSTGRES_URL_NON_POOLING")
+postgres_user = os.getenv("POSTGRES_USER")
+postgres_host = os.getenv("POSTGRES_HOST")
+postgres_password = os.getenv("POSTGRES_PASSWORD")
+postgres_database = os.getenv("POSTGRES_DATABASE")
 
+# Create the PostgresqlDatabase instance
+db = PostgresqlDatabase(
+    database=postgres_database,
+    user=postgres_user,
+    password=postgres_password,
+    host=postgres_host,
+    port=5432  # replace with your actual port if it's different
+)
 # import http.server
 # import socketserver
 
