@@ -64,6 +64,7 @@ class PlayerLog(Model):
     indexes = (
         (('name', ), False),  # Creating an index on the 'name' column
     )
+    table_name = 'playerlog'
 
 
 class BossLog(Model):
@@ -73,7 +74,7 @@ class BossLog(Model):
 
   class Meta:
     database = db
-
+    table_name = 'bosslog'
 class_code = {'warrior': 0, 'mage': 1, 'archer': 2, 'shaman': 3}
 faction_code = {"vg": 0, "bl": 1}
 
