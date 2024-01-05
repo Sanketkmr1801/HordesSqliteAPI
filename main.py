@@ -58,12 +58,6 @@ class BossLog(Model):
   class Meta:
     database = db
 
-class MyModel(Model):
-  id = IntegerField(primary_key=True)
-
-  class Meta:
-    database = db
-
 class_code = {'warrior': 0, 'mage': 1, 'archer': 2, 'shaman': 3}
 faction_code = {"vg": 0, "bl": 1}
 
@@ -77,7 +71,6 @@ async def lifespan(app: FastAPI):
       db.connect()
       db.create_tables([PlayerLog], safe=True)  # Create tables if they don't exist
       db.create_tables([BossLog], safe=True)  # Create tables if they don't exist
-      db.create_tables([MyModel])
       
     except OperationalError as e:
       # Handle the exception
@@ -459,6 +452,12 @@ async def update_db():
                             player_rows.append(row)
 
                     with db.atomic():
+                        # Batch insert player logs
+                        if player_rows:
+                            # print(player_rows)
+                            PlayerLog.insert_many(player_rows).execute()
+                            player_rows = []
+                          
                         if(existing_records):
                             PlayerLog.bulk_update(existing_records, fields=[
                                     PlayerLog.hps, PlayerLog.hpsid, PlayerLog.dps, PlayerLog.dpsid,
@@ -467,12 +466,6 @@ async def update_db():
                                     PlayerLog.kills, PlayerLog.deaths
                                 ])
                             existing_records = []
-                        # Batch insert player logs
-                        if player_rows:
-                            # print(player_rows)
-                            PlayerLog.insert_many(player_rows).execute()
-                            player_rows = []
-
                         # print(boss_rows)
                         BossLog.insert_many(boss_rows).execute()
                         # Reset the counter and data for the next batch of boss kills
