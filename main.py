@@ -452,6 +452,14 @@ async def update_db():
                             player_rows.append(row)
 
                     with db.atomic():
+
+                                              # print(boss_rows)
+                        BossLog.insert_many(boss_rows).execute()
+                        # Reset the counter and data for the next batch of boss kills
+                        boss_kills_counter = 0
+                        player_data = {}
+                        boss_rows = []
+                      
                         # Batch insert player logs
                         if player_rows:
                             # print(player_rows)
@@ -466,12 +474,7 @@ async def update_db():
                                     PlayerLog.kills, PlayerLog.deaths
                                 ])
                             existing_records = []
-                        # print(boss_rows)
-                        BossLog.insert_many(boss_rows).execute()
-                        # Reset the counter and data for the next batch of boss kills
-                        boss_kills_counter = 0
-                        player_data = {}
-                        boss_rows = []
+
 
             except Exception as e:
                 print(f"Error downloading player logs for kill id {i}: {e}")
