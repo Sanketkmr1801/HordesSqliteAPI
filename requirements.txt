@@ -2,3 +2,4 @@ fastapi
 httpx[http2]
 peewee
 uvicorn
+psycopg2
