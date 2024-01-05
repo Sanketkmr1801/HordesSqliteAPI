@@ -84,11 +84,6 @@ async def lifespan(app: FastAPI):
       print(f"Error creating tables: {e}")
         # Additional setup or operations if needed
 
-except OperationalError as e:
-    # Handle the exception
-    print(f"Error creating tables: {e}")
-    db.create_tables([KekLog], safe=True)  # Create tables if they don't exist
-  
     # Schedule update_db every 2 hours
     asyncio.create_task(schedule_update_db())
 
